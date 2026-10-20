@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticate } from "../middlewares/auth.middleware.js";
-import { createProduct } from "../controllers/product.controller.js";
+import { createProductController, getAllProductsController } from "../controllers/product.controller.js";
 import multer from "multer";
 import { productValidator } from "../validators/product.validator.js";
 
@@ -25,7 +25,9 @@ routes.post(
     }
     next();
   },
+  //jo data aaya h usko read kr ske isliye multer use krte h
   upload.array("images"),
+
   (req, res, next) => {
     //this middleware is for converting req from string to json
     //price: '{"amount":439,"currency":"INR"}',
@@ -37,7 +39,10 @@ routes.post(
     next();
   },
   productValidator,
-  createProduct,
+  createProductController,
 );
+routes.get("/",
+  //so that it can only run for logged in user
+  authenticate,getAllProductsController)
 
 export default routes;
